@@ -41,7 +41,7 @@ RUN gcc makesms.c -o makesms
 
 FROM debian:stable-slim
 
-RUN apt update && apt install make \
+RUN apt update && apt install -y make python \
   && rm -rf /var/lib/apt/lists/*
 
 # Copy WLA-DX binaries
@@ -49,7 +49,7 @@ COPY --from=wla-builder /wla-dx/build/binaries/wla-z80 /usr/local/bin/wla-z80
 COPY --from=wla-builder /wla-dx/build/binaries/wlalink /usr/local/bin/wlalink
 
 # Copy SDCC
-COPY --from=sdcc-builder /sdcc/bin/sdcc /usr/local/bin/
+COPY --from=sdcc-builder /sdcc/bin/ /usr/local/bin/
 COPY --from=sdcc-builder /sdcc/share/sdcc/include/ /share/sdcc/include
 COPY --from=sdcc-builder /sdcc/share/sdcc/lib/z80/ /share/sdcc/lib/z80
 
@@ -58,6 +58,9 @@ COPY --from=sdcc-builder /devkitSMS/folder2c/src/folder2c /usr/local/bin/
 COPY --from=sdcc-builder /devkitSMS/assets2banks/src/assets2banks.py /usr/local/bin/assets2banks
 COPY --from=sdcc-builder /devkitSMS/ihx2sms/src/ihx2sms /usr/local/bin/
 COPY --from=sdcc-builder /devkitSMS/makesms/src/makesms /usr/local/bin/
+
+ENV SDCC_LIB /share/sdcc/lib
+ENV SDCC_INCLUDE /share/sdcc/include/
 
 WORKDIR /app
 
