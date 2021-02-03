@@ -1,6 +1,6 @@
 # sms-toolchain
 
-Docker container to run a Sega Master System build toolchain using [WLA-DX](https://github.com/vhelin/wla-dx)
+Docker container to run a Sega Master System build toolchain using [WLA-DX](https://github.com/vhelin/wla-dx) and [SDCC](http://sdcc.sourceforge.net/).
 
 ## Usage
 
@@ -33,5 +33,6 @@ The following tools are available within the container:
 Tool      | Usage
 ----------|-----------
 `make`    | [GNU make](https://www.gnu.org/software/make/manual/make.html)
+`sdcc`    | [Small Device C Compiler](http://sdcc.sourceforge.net/)
 `wla-z80` | Z80 assembler
 `wlalink` | WLA-DX Linker
