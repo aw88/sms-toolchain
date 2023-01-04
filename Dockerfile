@@ -1,4 +1,4 @@
-FROM debian:stable-slim AS wla-builder
+FROM ubuntu:22.04 AS wla-builder
 
 # Install dependencies
 RUN apt update && apt install -y git gcc cmake \
@@ -11,16 +11,17 @@ RUN git clone https://github.com/vhelin/wla-dx \
     && cmake .. \
     && cmake --build . --config Release
 
-FROM debian:stable-slim AS sdcc-builder
+FROM ubuntu:22.04 AS sdcc-builder
 
 # Install dependencies
 RUN apt update && apt install -y wget bzip2 git gcc \
   && rm -rf /var/lib/apt/lists/*
 
 # Pull SDCC snapshot
-RUN wget -O sdcc-snapshot-amd64-unknown-linux2.5-20210131-12036.tar.bz2 https://sourceforge.net/projects/sdcc/files/snapshot_builds/amd64-unknown-linux2.5/sdcc-snapshot-amd64-unknown-linux2.5-20210131-12036.tar.bz2/download \
-  && tar jxvf sdcc-snapshot-amd64-unknown-linux2.5-20210131-12036.tar.bz2 \
-  && rm sdcc-snapshot-amd64-unknown-linux2.5-20210131-12036.tar.bz2
+RUN wget -O sdcc-4.2.0-amd64-unknown-linux2.5.tar.bz2 https://sourceforge.net/projects/sdcc/files/sdcc-linux-amd64/4.2.0/sdcc-4.2.0-amd64-unknown-linux2.5.tar.bz2/download \
+  && tar jxvf sdcc-4.2.0-amd64-unknown-linux2.5.tar.bz2 \
+  && rm sdcc-4.2.0-amd64-unknown-linux2.5.tar.bz2 \
+  && mv sdcc-4.2.0 sdcc
 
 # Pull devkitSMS
 RUN git clone --depth=1 https://github.com/sverx/devkitSMS
@@ -39,10 +40,11 @@ WORKDIR /devkitSMS/makesms/src/
 RUN gcc makesms.c -o makesms
 
 
-FROM debian:stable-slim
+FROM ubuntu:22.04
 
-RUN apt update && apt install -y make python \
-  && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y make python3 \
+  && rm -rf /var/lib/apt/lists/* \
+  && ln -s /usr/bin/python3 /usr/bin/python
 
 # Copy WLA-DX binaries
 COPY --from=wla-builder /wla-dx/build/binaries/wla-z80 /usr/local/bin/wla-z80
